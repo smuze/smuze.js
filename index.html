@@ -1,0 +1,103 @@
+<html>
+<head>
+
+<script type="text/javascript" src="http://d217nuybek8vy1.cloudfront.net/js/smuze.js"></script>
+<script type="text/javascript">
+  // This is required to identify your account
+  Smuze.setPublicKey('public_YOUR_PUBLIC_KEY_HERE');
+</script>
+
+
+
+<script type="text/javascript">
+  function paymentCallback(response) {
+    var form = document.getElementById('payment-form');
+  
+    // Check for errors
+    if (response.error) {
+      // Display error message
+      document.getElementById('payment-errors').innerHTML = response.error.message;
+      // Re-enable form submit button
+      var inputs = form.getElementsByTagName("BUTTON");
+      for (var i = 0; i < inputs.length; i++) {
+          if (inputs[i].type === 'submit') {
+              inputs[i].disabled = false;
+          }
+      }
+    } else {
+    // Acquire card token from response
+    var token = response.id;
+    // Append token to the form so that it will be send to server
+    alert(token);
+    //form.append($('<input type="hidden" name="token" />').val(token));
+
+    // Submit the form with its default action
+    form.submit();
+  }
+}
+</script>
+</head>
+
+<body>
+
+<form action="" method="post" id="payment-form">
+  <p>
+  <span id="payment-errors"></span>
+  </p>
+
+    <div class="form-group">
+    <label>
+      <span>Email</span>
+      <input type="text" size="20" data-smuze="email" value="test@test.com" />
+    </label>
+  </div>
+
+  <div class="form-group">
+    <label>
+      <span>Card Number</span>
+      <input type="text" size="20" data-smuze="number" value="4111111111111111" />
+    </label>
+  </div>
+
+  <div class="form-group">
+    <label>
+      <span>CVC</span>
+      <input type="text" size="4" data-smuze="cvc" value="123" />
+    </label>
+  </div>
+
+  <div class="form-group">
+    <label>
+      <span>Expiration (MM/YYYY)</span>
+      <input type="text" size="2" data-smuze="exp_month" value="12"/>
+    </label>
+    <span> / </span>
+    <input type="text" size="4" data-smuze="exp_year" value="2019"/>
+  </div>
+
+  <button type="submit">Pay</button>
+</form>
+
+
+
+<script type="text/javascript">
+document.getElementById('payment-form').addEventListener('submit', function(evt){
+evt.preventDefault();
+var form = document.getElementById('payment-form');
+
+// Disable form submit button to prevent repeatable submits
+var inputs = form.getElementsByTagName("BUTTON");
+  for (var i = 0; i < inputs.length; i++) {
+      if (inputs[i].type === 'submit') {
+          inputs[i].disabled = true;
+      }
+  }
+// Send credit card data to Smuze, and response back with token to function: paymentCallback
+Smuze.createCardToken(form, paymentCallback);
+// Prevent the form from submitting default action
+return false;
+})
+</script>
+
+</body>
+</html>
